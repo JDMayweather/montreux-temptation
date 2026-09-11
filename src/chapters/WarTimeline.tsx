@@ -120,7 +120,8 @@ export default function WarTimeline() {
             backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
             margin: 0 -4vw;
-            padding: 0.75rem 4vw 0.9rem;
+            padding: 0.75rem 4vw 0.9rem 6vw;
+            overflow: visible;
             border-bottom: 1px solid #1d2735;
           }
           .wt-date { font-size: clamp(1.6rem, 7vw, 2.4rem); }
