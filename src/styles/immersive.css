@@ -135,3 +135,16 @@ blockquote { border-left: 4px solid var(--accent); margin: 1rem 0; padding: 0.5r
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
 }
+
+/* Embed mode: parent scrolls, inner triggers never fire — force everything visible. */
+.embed .fig,
+.embed .q-line,
+.embed .wt-step,
+.embed .hero-line-inner,
+.embed .hero-fade {
+  opacity: 1 !important;
+  transform: none !important;
+}
+.embed .fig-frame img { animation: none !important; }
+.embed .hero-cover { transform: none !important; }
+.embed .hero-content { opacity: 1 !important; transform: none !important; }
