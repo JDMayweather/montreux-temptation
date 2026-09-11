@@ -1,7 +1,10 @@
 /* Infogram-style loader for The Montreux Temptation.
  * CMS paste: <div class="immersive-embed" data-id="montreux-temptation"></div>
- *            + this script. Everything else (card chrome, iframe, credit,
- *            auto-height) is handled here.
+ *            + this script. Card chrome, iframe, credit, auto-height handled here.
+ *
+ * Hostile-CMS guards: mounts after parent hydration settles (window load),
+ * re-mounts the iframe if the host framework removes it, and re-applies the
+ * last known height if inline styles get wiped.
  */
 (function () {
   "use strict";
@@ -9,6 +12,9 @@
   var SRC = HOST + "/?embed=true";
   var STANDALONE = HOST + "/";
   var FLAG = "immersiveMounted";
+  var RETRIES = "immersiveRetries";
+  var MAX_RETRIES = 5;
+  var lastHeight = 0;
 
   function isOwnOrigin(origin) {
     if (origin === HOST) return true;
@@ -32,7 +38,8 @@
   }
 
   function addCredit(el) {
-    if (el.parentNode && el.parentNode.querySelector("[data-immersive-credit]")) return;
+    if (!el.parentNode) return;
+    if (el.parentNode.querySelector("[data-immersive-credit]")) return;
     var p = document.createElement("p");
     p.setAttribute("data-immersive-credit", "true");
     p.style.fontSize = "0.85rem";
@@ -47,10 +54,7 @@
     el.parentNode.insertBefore(p, el.nextSibling);
   }
 
-  function mountInto(el) {
-    if (!el || el.dataset[FLAG] === "true") return;
-    el.dataset[FLAG] = "true";
-    styleCard(el);
+  function buildFrame() {
     var frame = document.createElement("iframe");
     frame.src = SRC;
     frame.title = "The Montreux Temptation";
@@ -58,11 +62,41 @@
     frame.style.minHeight = "70vh";
     frame.style.border = "0";
     frame.style.display = "block";
+    if (lastHeight > 0) frame.style.height = lastHeight + "px";
     frame.setAttribute("scrolling", "no");
     frame.setAttribute("loading", "lazy");
     frame.setAttribute("allowfullscreen", "true");
-    el.appendChild(frame);
-    if (el.parentNode) addCredit(el);
+    return frame;
+  }
+
+  function watch(el) {
+    if (!window.MutationObserver || !el.parentNode) return;
+    var target = el.parentNode;
+    var obs = new MutationObserver(function () {
+      var stillThere = el.querySelector("iframe");
+      if (!stillThere) {
+        var n = parseInt(el.dataset[RETRIES] || "0", 10);
+        if (n < MAX_RETRIES) {
+          el.dataset[RETRIES] = String(n + 1);
+          el.appendChild(buildFrame());
+        } else if (obs) {
+          obs.disconnect();
+        }
+      }
+    });
+    obs.observe(target, { childList: true, subtree: true });
+  }
+
+  function mountInto(el) {
+    if (!el || el.dataset[FLAG] === "true") return;
+    el.dataset[FLAG] = "true";
+    el.dataset[RETRIES] = "0";
+    styleCard(el);
+    el.appendChild(buildFrame());
+    if (el.parentNode) {
+      addCredit(el);
+      watch(el);
+    }
   }
 
   function mount() {
@@ -71,8 +105,9 @@
   }
 
   function applyHeight(source, height) {
-    var px = Number(height) > 0 ? Number(height) + "px" : null;
-    if (!px) return false;
+    var px = Number(height) > 0 ? Number(height) : 0;
+    if (!px) return;
+    lastHeight = px;
     var frames = document.querySelectorAll(".news18-immersive iframe,.immersive-embed iframe");
     var hit = false;
     for (var i = 0; i < frames.length; i++) {
@@ -81,14 +116,12 @@
       } catch (e) {
         continue;
       }
-      frames[i].style.height = px;
+      frames[i].style.height = px + "px";
       hit = true;
     }
-    // Unknown source (older child build): fall back to broadcast.
     if (!hit) {
-      for (var j = 0; j < frames.length; j++) frames[j].style.height = px;
+      for (var j = 0; j < frames.length; j++) frames[j].style.height = px + "px";
     }
-    return true;
   }
 
   window.addEventListener("message", function (e) {
@@ -98,9 +131,21 @@
     applyHeight(e.source, d.height);
   });
 
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", mount);
-  } else {
+  // Mount late: lets the host framework finish hydration first so our nodes
+  // are not treated as mismatches. Fallback timer covers pages whose load
+  // event is delayed by ads/trackers.
+  var mounted = false;
+  function mountOnce() {
+    if (mounted) return;
+    mounted = true;
     mount();
+  }
+  if (document.readyState === "complete") {
+    window.setTimeout(mountOnce, 800);
+  } else {
+    window.addEventListener("load", function () {
+      window.setTimeout(mountOnce, 800);
+    });
+    window.setTimeout(mountOnce, 4000);
   }
 })();

@@ -48,6 +48,10 @@ function useEmbedResize(): void {
     window.addEventListener("load", onLoad);
     const t1 = window.setTimeout(send, 500);
     const t2 = window.setTimeout(send, 2500);
+    // Loader mounts late (post-hydration); keep announcing height awhile.
+    const t3 = window.setTimeout(send, 5000);
+    const t4 = window.setTimeout(send, 8000);
+    const t5 = window.setTimeout(send, 12000);
     if (document.fonts?.ready) {
       document.fonts.ready.then(() => send()).catch(() => undefined);
     }
@@ -56,6 +60,9 @@ function useEmbedResize(): void {
       window.removeEventListener("load", onLoad);
       window.clearTimeout(t1);
       window.clearTimeout(t2);
+      window.clearTimeout(t3);
+      window.clearTimeout(t4);
+      window.clearTimeout(t5);
       ro?.disconnect();
     };
   }, []);
