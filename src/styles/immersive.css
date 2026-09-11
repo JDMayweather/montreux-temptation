@@ -152,7 +152,7 @@ blockquote { border-left: 4px solid var(--accent); margin: 1rem 0; padding: 0.5r
 /* Embed mode: iframe height = content height, so vh units would feed back
    into themselves and explode. Convert every vertical-viewport size. */
 .embed header { height: auto !important; max-height: none !important; }
-.embed .hero-title { font-size: 12svw !important; }
+.embed .hero-title { font-size: 12svw; }
 .embed .hero-map svg, .embed .hero-map img { max-height: 320px !important; }
 .embed .wt-step { min-height: 0 !important; }
 .embed .wt-sticky { position: static !important; }
