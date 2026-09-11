@@ -166,7 +166,11 @@ blockquote { border-left: 4px solid var(--accent); margin: 1rem 0; padding: 0.5r
 .embed .wt-grid { height: 600px; overflow-y: auto; overscroll-behavior: auto; align-items: start; }
 .embed .wt-grid .wt-sticky { position: sticky !important; top: 0; z-index: 5; background: rgba(7, 9, 13, 0.94); padding: 0.75rem 0; border-bottom: 1px solid #1d2735; }
 @media (max-width: 900px) {
-  .embed .wt-grid { height: 480px; }
+  .embed .wt-grid { height: 560px; }
+  .embed .wt-date { font-size: 1.6rem !important; }
+  .embed .wt-sticky svg { max-height: 150px !important; }
+  .embed .wt-pill { padding: 0.45rem 0.8rem !important; font-size: 0.75rem !important; }
+  .embed .wt-step { min-height: 260px !important; }
 }
 .embed .chapter { padding-top: 4rem !important; padding-bottom: 4rem !important; }
 .embed .q-root { padding-top: 4rem !important; padding-bottom: 4rem !important; }

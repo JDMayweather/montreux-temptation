@@ -153,6 +153,7 @@ export default function Hero() {
           .hero-row { flex-direction: column; align-items: stretch; gap: 1.25rem; }
           .hero-map { flex: none; }
           .hero-map img { max-height: 24vh; }
+          .hero-title .stroke { color: #f2ede4; -webkit-text-stroke: 0; }
         }
         @media (max-width: 560px) {
           .hero-tiles { grid-template-columns: 1fr; gap: 0.4rem; margin-bottom: 1rem; }
