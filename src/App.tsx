@@ -33,7 +33,8 @@ function useEmbedResize(): void {
     // NOTE: targetOrigin "*" is intentional. The payload is a bare content
     // height (non-sensitive); the parent loader validates our origin instead.
     const send = (): void => {
-      const h = document.documentElement?.scrollHeight ?? 0;
+      // Cap: guards against vh-feedback blowups ever sizing the frame absurdly.
+      const h = Math.min(document.documentElement?.scrollHeight ?? 0, 40000);
       window.parent?.postMessage({ type: "IMMERSIVE_RESIZE", height: h }, "*");
     };
     send();

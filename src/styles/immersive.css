@@ -148,3 +148,15 @@ blockquote { border-left: 4px solid var(--accent); margin: 1rem 0; padding: 0.5r
 .embed .fig-frame img { animation: none !important; }
 .embed .hero-cover { transform: none !important; }
 .embed .hero-content { opacity: 1 !important; transform: none !important; }
+
+/* Embed mode: iframe height = content height, so vh units would feed back
+   into themselves and explode. Convert every vertical-viewport size. */
+.embed header { height: auto !important; max-height: none !important; }
+.embed .hero-title { font-size: 12svw !important; }
+.embed .hero-map svg, .embed .hero-map img { max-height: 320px !important; }
+.embed .wt-step { min-height: 0 !important; }
+.embed .wt-sticky { position: static !important; }
+.embed .chapter { padding-top: 4rem !important; padding-bottom: 4rem !important; }
+.embed .q-root { padding-top: 4rem !important; padding-bottom: 4rem !important; }
+.embed .wt-root { padding-top: 4rem !important; padding-bottom: 4rem !important; }
+.embed .hero-content { padding-top: 3rem !important; }
