@@ -30,10 +30,11 @@ function useEmbedResize(): void {
     if (typeof window === "undefined" || typeof document === "undefined") return;
     if (!isEmbed()) return;
     document.documentElement.classList.add("embed");
-    const PARENTS = ["https://www.news18.com", "https://news18.com"];
+    // NOTE: targetOrigin "*" is intentional. The payload is a bare content
+    // height (non-sensitive); the parent loader validates our origin instead.
     const send = (): void => {
       const h = document.documentElement?.scrollHeight ?? 0;
-      for (const o of PARENTS) window.parent?.postMessage({ type: "IMMERSIVE_RESIZE", height: h }, o);
+      window.parent?.postMessage({ type: "IMMERSIVE_RESIZE", height: h }, "*");
     };
     send();
     // Height shifts as images/fonts settle — observe + resend.
