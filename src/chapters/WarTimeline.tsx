@@ -110,6 +110,7 @@ export default function WarTimeline() {
         .wt-step.is-active { opacity: 1; transform: none; border-color: #e0862a; }
         @media (max-width: 900px) {
           .wt-root { padding: 6vh 4vw !important; }
+          .wt-pills { display: none !important; }
           .wt-grid { grid-template-columns: 1fr; }
           .wt-sticky {
             position: sticky;
@@ -147,7 +148,7 @@ export default function WarTimeline() {
               {active?.title}
             </p>
             <HormuzMap activeIndex={activeIndex} layers={layers} />
-            <div style={{ display: "flex", gap: "0.6rem", flexWrap: "wrap", marginTop: "1.1rem" }} role="group" aria-label="Map layers — toggle what the map shows">
+            <div className="wt-pills" style={{ display: "flex", gap: "0.6rem", flexWrap: "wrap", marginTop: "1.1rem" }} role="group" aria-label="Map layers — toggle what the map shows">
               {LAYER_KEYS.map((key) => (
                 <button
                   key={key}
