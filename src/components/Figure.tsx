@@ -12,8 +12,13 @@ export default function Figure({ src, alt, credit, caption }: FigureProps): Reac
 
   useEffect(() => {
     const el = ref.current;
+    // Embed mode: full-height iframe, everything is "in view" — show immediately.
     if (!el || typeof IntersectionObserver === "undefined") {
       el?.classList.add("is-in");
+      return;
+    }
+    if (typeof window !== "undefined" && new URLSearchParams(window.location.search).has("embed")) {
+      el.classList.add("is-in");
       return;
     }
     const observer = new IntersectionObserver(

@@ -24,6 +24,8 @@ export default function ScrollySection({ id, className, kicker, "data-num": data
   useEffect(() => {
     const el = ref.current;
     if (!el || REDUCED) return;
+    // Embed mode: no inner scroll, triggers never fire — leave content visible.
+    if (typeof window !== "undefined" && new URLSearchParams(window.location.search).has("embed")) return;
     const targets = el.querySelectorAll(":scope > *");
     if (!targets.length) return;
     const ctx = gsap.context(() => {

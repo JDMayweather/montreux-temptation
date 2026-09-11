@@ -36,11 +36,26 @@ function useEmbedResize(): void {
       for (const o of PARENTS) window.parent?.postMessage({ type: "IMMERSIVE_RESIZE", height: h }, o);
     };
     send();
+    // Height shifts as images/fonts settle — observe + resend.
+    let ro: ResizeObserver | null = null;
+    if (typeof ResizeObserver !== "undefined" && document.body) {
+      ro = new ResizeObserver(send);
+      ro.observe(document.body);
+    }
+    const onLoad = () => send();
     window.addEventListener("resize", send);
-    const t = window.setTimeout(send, 500);
+    window.addEventListener("load", onLoad);
+    const t1 = window.setTimeout(send, 500);
+    const t2 = window.setTimeout(send, 2500);
+    if (document.fonts?.ready) {
+      document.fonts.ready.then(() => send()).catch(() => undefined);
+    }
     return () => {
       window.removeEventListener("resize", send);
-      window.clearTimeout(t);
+      window.removeEventListener("load", onLoad);
+      window.clearTimeout(t1);
+      window.clearTimeout(t2);
+      ro?.disconnect();
     };
   }, []);
 }
@@ -70,6 +85,8 @@ function useLenis(): void {
 function useScrollReveal(): void {
   useEffect(() => {
     if (typeof window === "undefined") return;
+    // Embed mode: iframe is full content height, parent scrolls — triggers never fire. Stay visible.
+    if (isEmbed()) return;
     if (prefersReducedMotion()) return;
     gsap.registerPlugin(ScrollTrigger);
     const ctx = gsap.context(() => {

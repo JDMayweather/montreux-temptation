@@ -57,7 +57,10 @@ export default function Hero() {
     if (!root) return;
     const lines = root.querySelectorAll<HTMLElement>(".hero-line-inner");
     const fades = root.querySelectorAll<HTMLElement>(".hero-fade");
-    if (reduced || typeof window === "undefined") {
+    const embed =
+      typeof window !== "undefined" &&
+      new URLSearchParams(window.location.search).has("embed");
+    if (reduced || embed || typeof window === "undefined") {
       gsap.set(lines, { yPercent: 0 });
       gsap.set(fades, { opacity: 1, y: 0 });
       return;
