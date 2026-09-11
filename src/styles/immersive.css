@@ -155,6 +155,12 @@ blockquote { border-left: 4px solid var(--accent); margin: 1rem 0; padding: 0.5r
 .embed .hero-title { font-size: 12svw; }
 .embed .hero-map svg, .embed .hero-map img { max-height: 320px !important; }
 .embed .wt-step { min-height: 0 !important; }
+@media (min-width: 901px) {
+  .embed .wt-step { min-height: 480px !important; }
+}
+@media (max-width: 900px) {
+  .embed .wt-step { min-height: 300px !important; }
+}
 .embed .wt-sticky { position: static !important; }
 .embed .chapter { padding-top: 4rem !important; padding-bottom: 4rem !important; }
 .embed .q-root { padding-top: 4rem !important; padding-bottom: 4rem !important; }
