@@ -162,6 +162,12 @@ blockquote { border-left: 4px solid var(--accent); margin: 1rem 0; padding: 0.5r
   .embed .wt-step { min-height: 300px !important; }
 }
 .embed .wt-sticky { position: static !important; }
+/* Embed: timeline becomes a fixed-height inner scroller so the map can stick. */
+.embed .wt-grid { height: 600px; overflow-y: auto; overscroll-behavior: auto; align-items: start; }
+.embed .wt-grid .wt-sticky { position: sticky !important; top: 0; z-index: 5; background: rgba(7, 9, 13, 0.94); padding: 0.75rem 0; border-bottom: 1px solid #1d2735; }
+@media (max-width: 900px) {
+  .embed .wt-grid { height: 480px; }
+}
 .embed .chapter { padding-top: 4rem !important; padding-bottom: 4rem !important; }
 .embed .q-root { padding-top: 4rem !important; padding-bottom: 4rem !important; }
 .embed .wt-root { padding-top: 4rem !important; padding-bottom: 4rem !important; }
